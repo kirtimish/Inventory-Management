@@ -28,3 +28,16 @@ exports.addProduct = async (req,res,next) => {
         res.status(500).json({ error:err, success:false })
     }
 }
+
+exports.getSingleProduct = async (req,res,next) => {
+    const id =  req.params.id;
+    console.log(id,'>>>>')
+    try {
+        const data = await Product.findByPk(id)
+        console.log(data)
+
+        res.status(201).json({productDeleted: data});
+    } catch (err) {
+        res.status(500).json({message:err,success:false})
+    }
+}
