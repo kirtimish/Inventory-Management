@@ -41,3 +41,16 @@ exports.getSingleProduct = async (req,res,next) => {
         res.status(500).json({message:err,success:false})
     }
 }
+
+exports.deleteProduct = async (req,res,next) => {
+    const id =  req.params.id;
+    console.log(id,'>>>>')
+    try {
+        const data = await Product.destroy( {where : { id: id }})
+        // console.log(data)
+
+        res.status(201).json({message:'Deleted Successfully'});
+    } catch (err) {
+        res.status(500).json({message:err,success:false})
+    }
+}

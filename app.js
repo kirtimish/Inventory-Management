@@ -16,7 +16,11 @@ io.on('connection',(socket) => {
     console.log('User connected!')
     socket.on("new_product",(productDetails) => {
         // console.log(productDetails)
-        socket.broadcast.emit("new_product",productDetails)
+        socket.broadcast.emit("new_product",productDetails)   //once connection formed, it broadcast the info
+    })
+    socket.on("delete_product",(id) => {
+        // console.log(id)
+        socket.broadcast.emit("delete_product",id)
     })
 })
 

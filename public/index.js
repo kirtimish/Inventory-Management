@@ -1,7 +1,12 @@
 var socket = io();
+//Once data emmited, will broadcast.
 socket.on("new_product",(productDetails) => {
     createToastNotification('New Item added to list!')
     showInventoryItemListOnScreen(productDetails);
+})
+socket.on("delete_product",(id) => {
+    createToastNotification(`One Item with id ${id} is deleted`)
+    removeProductfromScreen(id);
 })
 
 async function addProduct(event){
@@ -58,6 +63,26 @@ function showInventoryItemListOnScreen(product){
     <div class="table-data"><button class="btn btn-danger" onclick="deleteProduct('${product.id}')">Delete</button><button class="btn btn-warning" onclick="showInfoToBeEdited('${product.id}','${product.name}','${product.quantity}','${product.price}','${product.category}')" >Edit</button></div> 
     </div>`
     parentNode.innerHTML += childhtml;
+}
+
+function deleteProduct(id){
+    console.log(id)
+    axios.delete(`http://localhost:3000/inventory/${id}`)
+    .then(res => {
+        var socket = io();
+        socket.emit("delete_product",id)
+    })
+    .catch(err => {
+        console.log(err)
+    })
+}
+
+function removeProductfromScreen(productId){
+    const parentNode = document.querySelector('.table-content');
+    const deleteChild = document.getElementById(productId);
+    if(deleteChild){
+        parentNode.removeChild(deleteChild);
+    }
 }
 
 function createToastNotification(msg) {
