@@ -54,3 +54,17 @@ exports.deleteProduct = async (req,res,next) => {
         res.status(500).json({message:err,success:false})
     }
 }
+
+exports.editProduct = async (req,res,next) => {
+    const id = req.params.id;
+    console.log(id, '>>>>')
+    try {
+        const data = await Product.update(req.body,
+        { where: { id: id } })
+        console.log(data)
+        
+        res.status(201).json({productUpdated: data});
+    } catch (err) {
+        res.status(500).json({ error:err, success:false })
+    }
+}

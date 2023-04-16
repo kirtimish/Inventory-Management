@@ -8,6 +8,11 @@ socket.on("delete_product",(id) => {
     createToastNotification(`One Item with id ${id} is deleted`)
     removeProductfromScreen(id);
 })
+socket.on("update_product",(updaedProductDetails) => {
+    const id = localStorage.getItem('id')
+    createToastNotification(`One Item with id ${id} is updated`)
+    updateProductDetailsOnScreen(updaedProductDetails)
+})
 
 async function addProduct(event){
     event.preventDefault();
@@ -82,6 +87,66 @@ function removeProductfromScreen(productId){
     const deleteChild = document.getElementById(productId);
     if(deleteChild){
         parentNode.removeChild(deleteChild);
+    }
+}
+
+
+function showInfoToBeEdited(id,name,quantity,price,category) {
+    console.log(id,name,quantity,price,category)
+    localStorage.setItem('id',id);
+    document.getElementById("_name").value = name;
+    document.getElementById("_quantity").value = quantity;
+    document.getElementById("_price").value = price;
+    document.getElementById("_category").value = category;
+}
+
+async function updateProduct(){
+    const id = localStorage.getItem('id');
+    const name = document.getElementById("_name").value;
+    const quantity = document.getElementById("_quantity").value;
+    const price = document.getElementById("_price").value;
+    const category = document.getElementById("_category").value
+
+    const productInfoToBeUpdated = {
+        name,
+        quantity,
+        price,
+        category
+    }
+
+    console.log(productInfoToBeUpdated);
+
+    try {
+        const response = await axios.put(`http://localhost:3000/inventory/${id}`,productInfoToBeUpdated)
+        if(response.status == 201){
+            var updaedProductDetails = productInfoToBeUpdated;
+            var socket = io();
+            socket.emit("update_product",updaedProductDetails)
+        }
+    } catch (err) {
+        console.log(err)
+    }
+
+    document.getElementById('_name').value = '';
+    document.getElementById('_quantity').value = '';
+    document.getElementById('_price').value = '';
+    document.getElementById('_category').value = '';
+}
+
+function updateProductDetailsOnScreen(product){
+    const productId = localStorage.getItem('id')
+    const updateChild = document.getElementById(productId);
+    console.log(updateChild)
+    if(updateChild){
+        const updateChildhtml = `<div class="table-row" id="${productId}">
+    <div class="table-data" id="id" value="${productId}">${productId}</div>
+    <div class="table-data" id="name" value="${product.name}">${product.name}</div>
+    <div class="table-data" id="quantity" value="${product.quantity}">${product.quantity}</div>
+    <div class="table-data" id="price" value="${product.price}">${product.price}</div>
+    <div class="table-data" id="category" value="${product.category}">${product.category}</div>
+    <div class="table-data"><button class="btn btn-danger" onclick="deleteProduct('${product.id}')">Delete</button><button class="btn btn-warning" onclick="showInfoToBeEdited('${product.id}','${product.name}','${product.quantity}','${product.price}','${product.category}')" >Edit</button></div> 
+    </div>`
+       updateChild.innerHTML = updateChildhtml
     }
 }
 

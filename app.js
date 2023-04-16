@@ -22,6 +22,10 @@ io.on('connection',(socket) => {
         // console.log(id)
         socket.broadcast.emit("delete_product",id)
     })
+    socket.on("update_product",(updaedProductDetails) => {
+        // console.log(updaedProductDetails)
+        socket.broadcast.emit("update_product",updaedProductDetails)
+    })
 })
 
 //MIDDLEWARES 

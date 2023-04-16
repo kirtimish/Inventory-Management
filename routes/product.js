@@ -10,5 +10,7 @@ router.post('/inventory',productControls.addProduct)
 router.get('/inventory/:id',productControls.getSingleProduct)
 //delete product from list
 router.delete('/inventory/:id',productControls.deleteProduct)
+//update product in the list
+router.put("/inventory/:id",productControls.editProduct);
 
 module.exports = router;
