@@ -7,6 +7,19 @@ const sequelize = require('./database');
 const productRoutes = require('./routes/product')    //routes
 const app = express();
 
+const http = require('http').createServer(app);
+const { Server } = require('socket.io');
+var io = new Server(http,{});
+
+//Checkng if the socket connection is on or not!
+io.on('connection',(socket) => {
+    console.log('User connected!')
+    socket.on("new_product",(productDetails) => {
+        // console.log(productDetails)
+        socket.broadcast.emit("new_product",productDetails)
+    })
+})
+
 //MIDDLEWARES 
 app.use(cors());     //For cross-origin resources sharing
 app.use(express.static(path.join(__dirname, 'public')));
