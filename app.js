@@ -1,10 +1,12 @@
+require('dotenv').config();
 const path = require('path')
 const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const sequelize = require('./database');
-
-const productRoutes = require('./routes/product')    //routes
+ //routes
+const productRoutes = require('./routes/product')   
+const errorController = require('./controllers/error');
 const app = express();
 
 const http = require('http').createServer(app);
@@ -34,6 +36,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // app.use(bodyParser.urlencoded({ extended:true }))
 app.use(bodyParser.json());
 app.use(productRoutes)
+app.use(errorController.get404);
 
 sequelize            //Setting up Connection with SQL database
 .sync()
